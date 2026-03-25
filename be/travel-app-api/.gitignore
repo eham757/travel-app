@@ -1,0 +1,62 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+out/
+artifacts/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+
+# Rider / ReSharper
+.idea/
+*.sln.iml
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# VS Code
+.vscode/
+
+# Test results / coverage
+[Tt]est[Rr]esult*/
+[Bb]enchmark[Dd]ot[Nn]et.Artifacts/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+coverage.cobertura.xml
+
+# Logs
+*.log
+logs/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+# Publish output
+publish/
+wwwroot/dist/
+
+# EF Core local DB files
+*.mdf
+*.ldf
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Local app config overrides (keep base appsettings files in source)
+appsettings.Local.json
+appsettings.*.local.json
+
+# Dotnet tools
+.dotnet/

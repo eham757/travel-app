@@ -1,42 +1,64 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# ---------------------------------------------
+# Root .gitignore for travel-app (Angular + .NET)
+# ---------------------------------------------
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+# OS files
+.DS_Store
+Thumbs.db
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
-# IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# Visual Studio Code
+# Editor/IDE files
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+.idea/
+*.sublime-workspace
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
+# ---------------------------------------------
+# Frontend (Angular)
+# ---------------------------------------------
+/fe/node_modules/
+/fe/dist/
+/fe/.angular/cache/
+/fe/coverage/
+/fe/tmp/
+/fe/out-tsc/
+/fe/bazel-out/
 
-# System files
-.DS_Store
-Thumbs.db
+# Frontend logs and temp artifacts
+/fe/npm-debug.log*
+/fe/yarn-error.log*
+/fe/pnpm-debug.log*
+/fe/testem.log
+/fe/connect.lock
+/fe/libpeerconnection.log
+
+# ---------------------------------------------
+# Backend (.NET)
+# ---------------------------------------------
+/be/**/bin/
+/be/**/obj/
+/be/.vs/
+
+# User-specific and tooling files
+/be/**/*.user
+/be/**/*.suo
+/be/**/*.userosscache
+/be/**/*.sln.docstates
+
+# Rider/ReSharper
+/be/**/_ReSharper*/
+/be/**/*.DotSettings.user
+
+# .NET test and coverage artifacts
+/be/**/TestResults/
+/be/**/coverage/
+/be/**/coverage.*
+
+# NuGet/package cache artifacts (if generated in repo)
+/be/**/packages/
+
+# Logs
+*.log
