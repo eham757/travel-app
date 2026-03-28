@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MapViewer } from './map-viewer/map-viewer';
+import { MapViewer } from './features/maps/map-viewer/map-viewer';
 
 @Component({
   selector: 'app-root',

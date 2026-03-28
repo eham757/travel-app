@@ -8,18 +8,9 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import CircleStyle from 'ol/style/Circle';
-import Fill from 'ol/style/Fill';
-import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
-
-//TODO Move this to a separate file and add tests for it
-type LocationMarker = {
-  name: string;
-  lon: number;
-  lat: number;
-};
+import { AttractionTier, CreateLocationRequest } from '../../../core/models/location';
 
 @Component({
   selector: 'app-map-viewer',
@@ -31,10 +22,10 @@ export class MapViewer implements AfterViewInit {
   private map?: Map;
   private markerSource = new VectorSource();
 
-  private locations: LocationMarker[] = [
-    { name: 'Amsterdam', lon: 4.90, lat: 52.37 },
-    { name: 'Rotterdam', lon: 4.48, lat: 51.92 },
-    { name: 'The Hague', lon: 4.30, lat: 52.08 },
+  private locations: CreateLocationRequest[] = [
+    this.createLocationRequest('Amsterdam', 52.37, 4.9),
+    this.createLocationRequest('Rotterdam', 51.92, 4.48),
+    this.createLocationRequest('The Hague', 52.08, 4.3),
   ];
 
   ngAfterViewInit(): void {
@@ -50,7 +41,7 @@ export class MapViewer implements AfterViewInit {
       console.log('Clicked location (lon, lat):', lon, lat);
       const locationName = prompt('Enter a name for this location:');
       if (locationName) {
-        const location = { name: locationName, lon, lat };
+        const location = this.createLocationRequest(locationName, lat, lon);
         this.locations.push(location);
         this.addMarkerFeature(location);
       }
@@ -76,7 +67,7 @@ export class MapViewer implements AfterViewInit {
   createMarkers = () => {
     const features = this.locations.map(location => {
       const feature = new Feature({
-        geometry: new Point(fromLonLat([location.lon, location.lat])),
+        geometry: new Point(fromLonLat([location.longitude, location.latitude])),
         name: location.name
       });
       return feature;
@@ -109,13 +100,25 @@ export class MapViewer implements AfterViewInit {
     return markerLayer;
   }
 
-  addMarkerFeature = (location: LocationMarker) => {
+  addMarkerFeature = (location: CreateLocationRequest) => {
     this.markerSource.addFeature(
       new Feature({
-        geometry: new Point(fromLonLat([location.lon, location.lat])),
+        geometry: new Point(fromLonLat([location.longitude, location.latitude])),
         name: location.name
       })
     );
+  }
+
+  private createLocationRequest(name: string, latitude: number, longitude: number): CreateLocationRequest {
+    return {
+      parentLocationId: null,
+      name,
+      description: '',
+      notes: '',
+      attractionTier: AttractionTier.WorthVisiting,
+      latitude,
+      longitude,
+    };
   }
 
   private readonly pinStyle = new Style({
