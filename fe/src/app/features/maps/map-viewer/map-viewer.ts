@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Signal } from '@angular/core';
 import Map from 'ol/Map';
 import TileLayer from 'ol/layer/Tile';
 import { OSM } from 'ol/source';
@@ -23,9 +23,22 @@ export class MapViewer implements AfterViewInit {
   private markerSource = new VectorSource();
 
   private locations: CreateLocationRequest[] = [
+    //netherlands
     this.createLocationRequest('Amsterdam', 52.37, 4.9),
     this.createLocationRequest('Rotterdam', 51.92, 4.48),
     this.createLocationRequest('The Hague', 52.08, 4.3),
+    this.createLocationRequest('Utrecht', 52.09, 5.12),
+    this.createLocationRequest('Delft', 52.01, 4.36),
+    this.createLocationRequest('Leiden', 52.16, 4.49),
+    this.createLocationRequest('Haarlem', 52.38, 4.63),
+
+
+    //japan
+    this.createLocationRequest('Tokyo', 35.68, 139.76),
+    this.createLocationRequest('Kyoto', 35.01, 135.77),
+    this.createLocationRequest('Osaka', 34.69, 135.5),
+    this.createLocationRequest('Hiroshima', 34.39, 132.45),
+    this.createLocationRequest('Nara', 34.68, 135.83),
   ];
 
   ngAfterViewInit(): void {
@@ -79,23 +92,7 @@ export class MapViewer implements AfterViewInit {
 
     const markerLayer = new VectorLayer({
       source: this.markerSource,
-      // style: new Style({
-      //   image: new CircleStyle({
-      //     radius: 9,
-      //     fill: new Fill({ color: 'rgba(0, 30, 122, 0.2)' }),
-      //     stroke: new Stroke({ color: 'rgba(0, 30, 122, 0.5)', width: 1 })
-      //   })
-      // })
-
       style: this.pinStyle
-
-      // style: new Style({
-      //   image: new CircleStyle({
-      //     radius: 7,
-      //     fill: new Fill({ color: 'red' }),
-      //     stroke: new Stroke({ color: 'black', width: 2 })
-      //   })
-      // })
     });
     return markerLayer;
   }
