@@ -12,6 +12,12 @@ import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
 import { AttractionTier, CreateLocationRequest } from '../../../core/models/location';
 
+// TODO: This component is currently just a playground for testing out OpenLayers. It will be integrated with the backend and location service in the future to display actual locations from the database and allow users to add new locations by clicking on the map.
+// In the furture, this component should be giving some inputs:
+// - locations: Location[] - the list of locations to display on the map. This will be used to create markers for each location and display them on the map.
+// - onClick: (params) => a callback function that could be for adding new locations or for showing details of a location when a marker is clicked. The params will depend on the use case, but it could include the coordinates of the click event or the id of the location that was clicked on.
+// - Start coordinates and zoom level for the map view could also be made configurable through inputs.
+
 @Component({
   selector: 'app-map-viewer',
   imports: [],
