@@ -1,5 +1,23 @@
-<ul>
-@for (location of locations(); track location) {
-    <li>{{ location.name }}</li>
-}
-</ul>
+<section class="container">
+    <div class="row">
+        <div class="list">
+            <h1>Locations</h1>
+            <ul>
+                @for (location of locations(); track location) {
+                    <li>{{ location.name }}</li>
+                }
+            </ul>
+        </div>
+        <div class="map">
+            <app-map-viewer 
+            [locations]="locations()"
+            [initialZoom]="0"
+            [initialCenter]="[0,0]"></app-map-viewer>
+        </div>
+        <div class="details">
+            <h1>Location Details</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, quasi nesciunt voluptas error unde eos. Earum, eos, impedit necessitatibus aliquid temporibus qui vel voluptates vero, blanditiis odio debitis repellat laboriosam.</p>
+        </div>
+    </div>
+</section>
+

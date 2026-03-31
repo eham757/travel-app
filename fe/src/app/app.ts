@@ -5,7 +5,7 @@ import { LocationList } from './features/locations/location-list/location-list';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MapViewer, LocationList],
+  imports: [RouterOutlet, LocationList],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

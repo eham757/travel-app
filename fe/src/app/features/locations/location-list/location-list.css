@@ -1,0 +1,45 @@
+
+.container {
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  margin: 0 auto;
+  max-width: 80rem;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 100%;
+
+  .list{
+    flex: 0 1 10rem;
+    width: 5rem;
+    border: 1px solid #dbe1e8;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  }
+
+  .map {
+    flex: 2 1 20rem;
+    width: 20rem;
+    min-height: 50vh;
+    border: 1px solid #dbe1e8;
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  }
+
+  .details {
+    flex: 0 1 20rem;
+    width: 10rem;
+    min-height: 50vh;
+    border: 1px solid #dbe1e8;
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    padding: 1rem;
+  }
+}
