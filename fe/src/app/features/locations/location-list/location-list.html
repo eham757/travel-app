@@ -4,15 +4,15 @@
             <h1>Locations</h1>
             <ul>
                 @for (location of locations(); track location) {
-                    <li (click)="onLocationClick(location)">{{ location.name }}</li>
+                    <app-location-node [locationNode]="location" [onLocationClick]="onLocationClick"></app-location-node>
                 }
             </ul>
         </div>
         <div class="map">
             <app-map-viewer 
-            [locations]="locations()"
-            [initialZoom]="0"
-            [initialCenter]="[0,0]"></app-map-viewer>
+            [locations]="mapLocations()"
+            [initialZoom]="selectedLocation() ? 6 : 2"
+            [initialCenter]="selectedLocation() ? [ selectedLocation()!.longitude, selectedLocation()!.latitude ] : [ 0, 0 ]"></app-map-viewer>
         </div>
         @if (selectedLocation()) {
             <div class="details">

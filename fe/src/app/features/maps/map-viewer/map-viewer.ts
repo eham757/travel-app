@@ -60,6 +60,16 @@ export class MapViewer implements AfterViewInit {
     }
   });
 
+  private moveToLocation = effect(() => {
+    const zoom = this.initialZoom();
+    const center = this.initialCenter();
+    if (this.map) {
+      this.map.getView().setCenter(fromLonLat(center));
+      this.map.getView().setZoom(zoom);
+    }
+
+  });
+
   ngAfterViewInit(): void {
     this.map = this.createMap();
   }

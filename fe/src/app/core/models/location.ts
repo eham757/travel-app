@@ -29,3 +29,10 @@ export interface CreateLocationRequest {
 }
 
 export interface UpdateLocationRequest extends CreateLocationRequest {}
+
+
+// Locations are listed in a hierarchy --> tree 
+// if i want to map that i need to make a recursive data structure
+export interface LocationNode extends Location {
+	children: LocationNode[];
+}
