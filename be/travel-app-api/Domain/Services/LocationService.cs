@@ -18,6 +18,18 @@ namespace travel_app_api.Domain.Services
             return entities.Select(x => x.ToDomainModel());
         }
 
+        public async Task<IEnumerable<LocationModel>> GetTopLayerAsync()
+        {
+            var entities = await _locationRepository.GetTopLayerAsync();
+            return entities.Select(x => x.ToDomainModel());
+        }
+
+        public async Task<IEnumerable<LocationModel>> GetByParentIdAsync(Guid parentId)
+        {
+            var entities = await _locationRepository.GetByParentIdAsync(parentId);
+            return entities.Select(x => x.ToDomainModel());
+        }
+
         public async Task<LocationModel?> GetByIdAsync(Guid id)
         {
             var entity = await _locationRepository.GetByIdAsync(id);

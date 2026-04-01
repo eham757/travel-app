@@ -20,6 +20,20 @@ namespace travel_app_api.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<LocationEntity>> GetTopLayerAsync()
+        {
+            return await _context.Locations
+                .Where(x => !x.IsArchived && x.ParentLocationId == null)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LocationEntity>> GetByParentIdAsync(Guid parentId)
+        {
+            return await _context.Locations
+                .Where(x => !x.IsArchived && x.ParentLocationId == parentId)
+                .ToListAsync();
+        }
+
         public async Task<LocationEntity?> GetByIdAsync(Guid id)
         {
             return await _context.Locations

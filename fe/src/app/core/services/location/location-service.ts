@@ -15,6 +15,14 @@ export class LocationService {
     return this.http.get<Location[]>(`${API_BASE}/location`);
   }
 
+  getTopLayerLocations(): Observable<Location[]> {
+    return this.http.get<Location[]>(`${API_BASE}/location/top-layer`);
+  }
+
+  getByParentLocationId(parentLocationId: string): Observable<Location[]> {
+    return this.http.get<Location[]>(`${API_BASE}/location/children/${parentLocationId}`);
+  }
+
   /// ID is a guid
   getById(id: string): Observable<Location> {
     return this.http.get<Location>(`${API_BASE}/location/${id}`);

@@ -23,6 +23,20 @@ namespace travel_app_api.Controllers
             return Ok(locations.Select(x => x.ToResponseDto()));
         }
 
+        [HttpGet("top-layer")]
+        public async Task<ActionResult<IEnumerable<LocationResponseDto>>> GetTopLayer()
+        {
+            var locations = await _locationService.GetTopLayerAsync();
+            return Ok(locations.Select(x => x.ToResponseDto()));
+        }
+
+        [HttpGet("children/{parentId:guid}")]
+        public async Task<ActionResult<IEnumerable<LocationResponseDto>>> GetByParentId(Guid parentId)
+        {
+            var locations = await _locationService.GetByParentIdAsync(parentId);
+            return Ok(locations.Select(x => x.ToResponseDto()));
+        }
+
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<LocationResponseDto>> GetById(Guid id)
         {

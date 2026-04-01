@@ -4,7 +4,7 @@
             <h1>Locations</h1>
             <ul>
                 @for (location of locations(); track location) {
-                    <li>{{ location.name }}</li>
+                    <li (click)="onLocationClick(location)">{{ location.name }}</li>
                 }
             </ul>
         </div>
@@ -14,10 +14,12 @@
             [initialZoom]="0"
             [initialCenter]="[0,0]"></app-map-viewer>
         </div>
-        <div class="details">
-            <h1>Location Details</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, quasi nesciunt voluptas error unde eos. Earum, eos, impedit necessitatibus aliquid temporibus qui vel voluptates vero, blanditiis odio debitis repellat laboriosam.</p>
-        </div>
+        @if (selectedLocation()) {
+            <div class="details">
+                <h1>{{ selectedLocation()?.name }}</h1>
+                <p>{{ selectedLocation()?.description }}</p>
+            </div>
+        }
     </div>
 </section>
 
