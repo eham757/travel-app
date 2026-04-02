@@ -33,7 +33,6 @@ export class MapViewer implements AfterViewInit {
 
   private setupMarkers = effect(() => {
     const locations = this.locations();
-    console.log('Locations updated:', locations);
     // Update markers whenever locations change
     if (this.map && this.markerSource) {
       this.markerSource.clear();
