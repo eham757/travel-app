@@ -91,38 +91,4 @@ export class LocationList implements AfterViewInit {
         }
     }
   }
-
-  private calculateMapCenter(locations: Location[]): [number, number] {
-    if (locations.length === 0) {
-        return [0, 0]; // Default center
-    }
-    const latitudes = locations.map(loc => loc.latitude);
-    const longitudes = locations.map(loc => loc.longitude);
-    const avgLatitude = latitudes.reduce((a, b) => a + b, 0) / latitudes.length;
-    const avgLongitude = longitudes.reduce((a, b) => a + b, 0) / longitudes.length;
-    return [avgLongitude, avgLatitude]; // Note: OpenLayers uses [longitude, latitude] order
-    
-  }
-
-  private calculateMapZoom(locations: Location[]): number {
-    if (locations.length === 0) {
-        return 2; // Default zoom for world view
-    }
-    const latitudes = locations.map(loc => loc.latitude);
-    const longitudes = locations.map(loc => loc.longitude);
-    const latRange = Math.max(...latitudes) - Math.min(...latitudes);
-    const lonRange = Math.max(...longitudes) - Math.min(...longitudes);
-    const maxRange = Math.max(latRange, lonRange);
-    console.log('Calculated max range for zoom level:', maxRange);
-    if (maxRange < 0.01) return 15;
-    if (maxRange < 0.1) return 12;
-    if (maxRange < 1) return 10;
-    if (maxRange < 2) return 9;
-    if (maxRange < 5) return 8;
-    if (maxRange < 10) return 7;
-    if (maxRange < 20) return 6;
-    if (maxRange < 50) return 5;
-    if (maxRange < 200) return 4;
-    return 2;
-  }
 }

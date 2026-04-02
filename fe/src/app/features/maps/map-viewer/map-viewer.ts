@@ -27,25 +27,6 @@ import { AttractionTier, CreateLocationRequest, Location } from '../../../core/m
 export class MapViewer implements AfterViewInit {
   private map?: Map;
   private markerSource = new VectorSource();
-
-  // private locations: CreateLocationRequest[] = [
-  //   //netherlands
-  //   this.createLocationRequest('Amsterdam', 52.37, 4.9),
-  //   this.createLocationRequest('Rotterdam', 51.92, 4.48),
-  //   this.createLocationRequest('The Hague', 52.08, 4.3),
-  //   this.createLocationRequest('Utrecht', 52.09, 5.12),
-  //   this.createLocationRequest('Delft', 52.01, 4.36),
-  //   this.createLocationRequest('Leiden', 52.16, 4.49),
-  //   this.createLocationRequest('Haarlem', 52.38, 4.63),
-
-
-  //   //japan
-  //   this.createLocationRequest('Tokyo', 35.68, 139.76),
-  //   this.createLocationRequest('Kyoto', 35.01, 135.77),
-  //   this.createLocationRequest('Osaka', 34.69, 135.5),
-  //   this.createLocationRequest('Hiroshima', 34.39, 132.45),
-  //   this.createLocationRequest('Nara', 34.68, 135.83),
-  // ];
   readonly locations = input<Location[]>([]); // is this the input signal syntax?
   readonly center = input<[number, number]>([4.33, 52.06]);
   readonly zoom = input<number>(7);
@@ -73,10 +54,6 @@ export class MapViewer implements AfterViewInit {
   ngAfterViewInit(): void {
     this.map = this.createMap();
   }
-
-  //effect that updates the markers on the map whenever the locations input signal changes
-
-
 
   createMap = () => {
     return new Map({
@@ -145,11 +122,9 @@ export class MapViewer implements AfterViewInit {
 
   private fitToLocations = effect(() => {
     const locations = this.locations();
-    console.log('Fitting map view to locations:', locations);
     if (this.map && locations.length > 0) {
-      console.log('Marker source extent before fitting:', this.markerSource.getExtent());
       const extent = this.markerSource.getExtent();
-      this.map.getView().fit(extent!, { padding: [75, 75, 75, 75], maxZoom: 15 });
+      this.map.getView().fit(extent!, { padding: [100, 100, 100, 100], maxZoom: 15 });
     }
   });
 }
