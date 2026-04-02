@@ -37,34 +37,59 @@ export class LocationList implements AfterViewInit {
     this.locationService.getByParentLocationId(location.id).subscribe({
         next: (locations) => {
             console.log('Locations loaded for parent location id', location.id, locations);
-            const index = this.locations().findIndex(loc => loc.id === location.id);
-            if (index !== -1) {
-                const newLocations = [...this.locations()];
-                const updatedLocation = { ...newLocations[index], children: locations as LocationNode[] };
-                newLocations[index] = updatedLocation;
-                this.locations.set(newLocations);
-                if(updatedLocation.children && updatedLocation.children.length > 0) {
-                    console.log('Updating map locations to children of location with id', location.id, updatedLocation.children);
-                    console.log('Updated location:', updatedLocation.children);
-                    this.mapLocations.set(updatedLocation.children as Location[]);
-                } else {
-                    console.log('No children found for location with id', location.id, 'setting map locations to the location itself');
-                    console.log('Updated location:', updatedLocation);
-                    this.mapLocations.set([updatedLocation] as Location[]);
-                }
-            } else {
-                console.warn('Location with id', location.id, 'not found in the tree');
-                if (!location.parentLocationId){
-                    this.mapLocations.set(this.locations() as Location[]);
-                }
-                else {
-                    
-                }
-            }
+            this.updateLocationsTreeWithChildren(location.id, locations as LocationNode[]);
+            const updatedLocation = this.findLocationNodeById(this.locations(), location.id);
+            this.updateMapLocationsForSelectedLocation(updatedLocation!);
+            
         },
         error: (error) => {
             console.error('Error loading locations for parent location id', location.id, error);
         }
     });
+  }
+
+  private updateLocationsTreeWithChildren(parentLocationId: string, children: LocationNode[]) {
+    const updateTree = (locations: LocationNode[]): LocationNode[] => {
+        return locations.map(location => {
+            if (location.id === parentLocationId) {
+                return { ...location, children };
+            }
+            if (location.children) {
+                return { ...location, children: updateTree(location.children) };
+            }
+            return location;
+        });
+    };
+    this.locations.set(updateTree(this.locations()));
+  }
+
+  private findLocationNodeById(locations: LocationNode[], id: string): LocationNode | null {
+    for (const location of locations) {
+        if (location.id === id) {
+            return location;
+        }
+        if (location.children) {
+            const found = this.findLocationNodeById(location.children, id);
+            if (found) {
+                return found;
+            }
+        }
+    }
+    return null;
+  }
+
+  private updateMapLocationsForSelectedLocation(location: LocationNode) {
+    if (location.children && location.children.length > 0) {
+        console.log('Updating map locations to children of location with id', location.id, location.children);
+        this.mapLocations.set(location.children as Location[]);
+    } else {
+        console.log('No children found for location with id', location.id, 'setting map locations to the previous level locations');
+        const parentLocation = this.findLocationNodeById(this.locations(), location.parentLocationId || '');
+        if (parentLocation) {
+            this.mapLocations.set(parentLocation.children as Location[]);
+        } else {
+            this.mapLocations.set(this.locations() as Location[]);
+        }
+    }
   }
 }
