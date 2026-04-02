@@ -47,8 +47,8 @@ export class MapViewer implements AfterViewInit {
   //   this.createLocationRequest('Nara', 34.68, 135.83),
   // ];
   readonly locations = input<Location[]>([]); // is this the input signal syntax?
-  readonly initialCenter = input<[number, number]>([4.33, 52.06]);
-  readonly initialZoom = input<number>(7);
+  readonly center = input<[number, number]>([4.33, 52.06]);
+  readonly zoom = input<number>(7);
 
   private setupMarkers = effect(() => {
     const locations = this.locations();
@@ -61,8 +61,8 @@ export class MapViewer implements AfterViewInit {
   });
 
   private moveToLocation = effect(() => {
-    const zoom = this.initialZoom();
-    const center = this.initialCenter();
+    const zoom = this.zoom();
+    const center = this.center();
     if (this.map) {
       this.map.getView().setCenter(fromLonLat(center));
       this.map.getView().setZoom(zoom);
@@ -88,8 +88,8 @@ export class MapViewer implements AfterViewInit {
         this.createMarkers()
       ],
       view: new View({
-        center: fromLonLat(this.initialCenter()),
-        zoom: this.initialZoom()
+        center: fromLonLat(this.center()),
+        zoom: this.zoom()
       })
     });
   }
@@ -136,10 +136,20 @@ export class MapViewer implements AfterViewInit {
   // }
 
   private readonly pinStyle = new Style({
-  image: new Icon({
-    src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-    anchor: [0.5, 1],   // bottom center of image points to coordinate
-    scale: 0.8,
-  }),
-});
+    image: new Icon({
+      src: 'https://openlayers.org/en/latest/examples/data/icon.png',
+      anchor: [0.5, 1],   // bottom center of image points to coordinate
+      scale: 0.8,
+    }),
+  });
+
+  private fitToLocations = effect(() => {
+    const locations = this.locations();
+    console.log('Fitting map view to locations:', locations);
+    if (this.map && locations.length > 0) {
+      console.log('Marker source extent before fitting:', this.markerSource.getExtent());
+      const extent = this.markerSource.getExtent();
+      this.map.getView().fit(extent!, { padding: [75, 75, 75, 75], maxZoom: 15 });
+    }
+  });
 }
