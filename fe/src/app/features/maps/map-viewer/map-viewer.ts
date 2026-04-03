@@ -10,6 +10,9 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
+import Text from 'ol/style/Text';
+import Fill from 'ol/style/Fill';
+import Stroke from 'ol/style/Stroke';
 import { AttractionTier, CreateLocationRequest, Location } from '../../../core/models/location';
 
 // TODO: This component is currently just a playground for testing out OpenLayers. It will be integrated with the backend and location service in the future to display actual locations from the database and allow users to add new locations by clicking on the map.
@@ -74,7 +77,8 @@ export class MapViewer implements AfterViewInit {
     const features = this.locations().map(location => {
       const feature = new Feature({
         geometry: new Point(fromLonLat([location.longitude, location.latitude])),
-        name: location.name
+        name: location.name,
+        attractionTier: location.attractionTier
       });
       return feature;
     });
@@ -83,19 +87,20 @@ export class MapViewer implements AfterViewInit {
       features: features
     });
 
-    //somehow i must have the location here to know pin colour to use
     const markerLayer = new VectorLayer({
       source: this.markerSource,
-      style: this.materialPinStyle(AttractionTier.MustSee) 
+      style: (feature) => this.materialPinStyle(feature.get('attractionTier'), feature.get('name')),
     });
     return markerLayer;
   }
+
 
   addMarkerFeature = (location: Location) => {
     this.markerSource.addFeature(
       new Feature({
         geometry: new Point(fromLonLat([location.longitude, location.latitude])),
-        name: location.name
+        name: location.name,
+        attractionTier: location.attractionTier
       })
     );
   }
@@ -123,11 +128,18 @@ export class MapViewer implements AfterViewInit {
   //pinstyle that uses the new google material icons with different colors based on the attraction tier of the location
   // adding the atraction tier here ahs one problem, which is that the style is created when the marker layer is created, but the attraction tier of the location is only known when adding the marker feature. So for now, we will just use the same pin style for all markers, but in the future we can create a separate marker layer for each attraction tier and apply the corresponding style to each layer.
 
-  private readonly materialPinStyle = (attractionTier: AttractionTier) => new Style({
+  private readonly materialPinStyle = (attractionTier: AttractionTier, name: string) => new Style({
     image: new Icon({
       src: `https://maps.google.com/mapfiles/ms/icons/${this.getPinColor(attractionTier)}-dot.png`, 
       anchor: [0.5, 1],   // bottom center of image points to coordinate
       scale: 1,
+    }),
+    text: new Text({
+      text: name,
+      offsetY: -35,
+      fill: new Fill({ color: '#000' }),
+      stroke: new Stroke({ color: '#fff', width: 2 }),
+      font: 'bold 9px Noto Sans, sans-serif',
     }),
   });
 
@@ -135,7 +147,7 @@ export class MapViewer implements AfterViewInit {
     const locations = this.locations();
     if (this.map && locations.length > 0) {
       const extent = this.markerSource.getExtent();
-      this.map.getView().fit(extent!, { padding: [100, 100, 100, 100], maxZoom: 15 });
+      this.map.getView().fit(extent!, { padding: [100, 100, 100, 100], maxZoom: 19 });
     }
   });
 
