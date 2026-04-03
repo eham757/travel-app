@@ -49,7 +49,12 @@
     overflow: auto;
   }
 }
+ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 
+}
 @media (max-width: 980px) {
   .row {
     flex-direction: column;

@@ -83,9 +83,10 @@ export class MapViewer implements AfterViewInit {
       features: features
     });
 
+    //somehow i must have the location here to know pin colour to use
     const markerLayer = new VectorLayer({
       source: this.markerSource,
-      style: this.pinStyle
+      style: this.materialPinStyle(AttractionTier.MustSee) 
     });
     return markerLayer;
   }
@@ -119,6 +120,17 @@ export class MapViewer implements AfterViewInit {
     }),
   });
 
+  //pinstyle that uses the new google material icons with different colors based on the attraction tier of the location
+  // adding the atraction tier here ahs one problem, which is that the style is created when the marker layer is created, but the attraction tier of the location is only known when adding the marker feature. So for now, we will just use the same pin style for all markers, but in the future we can create a separate marker layer for each attraction tier and apply the corresponding style to each layer.
+
+  private readonly materialPinStyle = (attractionTier: AttractionTier) => new Style({
+    image: new Icon({
+      src: `https://maps.google.com/mapfiles/ms/icons/${this.getPinColor(attractionTier)}-dot.png`, 
+      anchor: [0.5, 1],   // bottom center of image points to coordinate
+      scale: 1,
+    }),
+  });
+
   private fitToLocations = effect(() => {
     const locations = this.locations();
     if (this.map && locations.length > 0) {
@@ -126,4 +138,17 @@ export class MapViewer implements AfterViewInit {
       this.map.getView().fit(extent!, { padding: [100, 100, 100, 100], maxZoom: 15 });
     }
   });
+
+  private getPinColor(attractionTier: AttractionTier): string {
+    switch (attractionTier) {
+      case AttractionTier.MustSee:
+        return 'red';
+      case AttractionTier.WorthVisiting:
+        return 'blue';
+      case AttractionTier.HiddenGem:
+        return 'green';
+      default:
+        return 'purple';
+    }
+  }
 }
