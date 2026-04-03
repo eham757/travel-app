@@ -117,17 +117,6 @@ export class MapViewer implements AfterViewInit {
   //   };
   // }
 
-  private readonly pinStyle = new Style({
-    image: new Icon({
-      src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-      anchor: [0.5, 1],   // bottom center of image points to coordinate
-      scale: 0.8,
-    }),
-  });
-
-  //pinstyle that uses the new google material icons with different colors based on the attraction tier of the location
-  // adding the atraction tier here ahs one problem, which is that the style is created when the marker layer is created, but the attraction tier of the location is only known when adding the marker feature. So for now, we will just use the same pin style for all markers, but in the future we can create a separate marker layer for each attraction tier and apply the corresponding style to each layer.
-
   private readonly materialPinStyle = (attractionTier: AttractionTier, name: string) => new Style({
     image: new Icon({
       src: `https://maps.google.com/mapfiles/ms/icons/${this.getPinColor(attractionTier)}-dot.png`, 
