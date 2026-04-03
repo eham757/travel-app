@@ -12,7 +12,8 @@
             <app-map-viewer 
             [locations]="mapLocations()"
             [zoom]="zoom()"
-            [center]="center()"></app-map-viewer>
+            [center]="center()"
+            [onMapClick]="onMapClick"></app-map-viewer>
         </div>
         @if (selectedLocation()) {
             <div class="details">

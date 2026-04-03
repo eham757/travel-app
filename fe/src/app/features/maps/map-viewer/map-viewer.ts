@@ -14,6 +14,7 @@ import Text from 'ol/style/Text';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import { AttractionTier, CreateLocationRequest, Location } from '../../../core/models/location';
+import { Coordinate } from 'ol/coordinate';
 
 // TODO: This component is currently just a playground for testing out OpenLayers. It will be integrated with the backend and location service in the future to display actual locations from the database and allow users to add new locations by clicking on the map.
 // In the furture, this component should be giving some inputs:
@@ -33,6 +34,7 @@ export class MapViewer implements AfterViewInit {
   readonly locations = input<Location[]>([]); // is this the input signal syntax?
   readonly center = input<[number, number]>([4.33, 52.06]);
   readonly zoom = input<number>(7);
+  readonly onMapClick = input<(map: Map, event: any) => void>();
 
   private setupMarkers = effect(() => {
     const locations = this.locations();
@@ -55,6 +57,12 @@ export class MapViewer implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.map = this.createMap();
+    if (this.map && this.onMapClick) {
+      this.map.on('click', (event) => {
+        const coordinate = toLonLat(event.coordinate);
+        this.onMapClick()?.(this.map!, event);
+      });
+    }
   }
 
   createMap = () => {
@@ -78,7 +86,8 @@ export class MapViewer implements AfterViewInit {
       const feature = new Feature({
         geometry: new Point(fromLonLat([location.longitude, location.latitude])),
         name: location.name,
-        attractionTier: location.attractionTier
+        attractionTier: location.attractionTier,
+        locationId: location.id
       });
       return feature;
     });
@@ -100,22 +109,11 @@ export class MapViewer implements AfterViewInit {
       new Feature({
         geometry: new Point(fromLonLat([location.longitude, location.latitude])),
         name: location.name,
-        attractionTier: location.attractionTier
+        attractionTier: location.attractionTier,
+        locationId: location.id
       })
     );
   }
-
-  // private createLocationRequest(name: string, latitude: number, longitude: number): Location {
-  //   return {
-  //     parentLocationId: null,
-  //     name,
-  //     description: '',
-  //     notes: '',
-  //     attractionTier: AttractionTier.WorthVisiting,
-  //     latitude,
-  //     longitude,
-  //   };
-  // }
 
   private readonly materialPinStyle = (attractionTier: AttractionTier, name: string) => new Style({
     image: new Icon({

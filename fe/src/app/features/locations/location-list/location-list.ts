@@ -3,6 +3,8 @@ import { LocationService } from '../../../core/services/location/location-servic
 import { Location, LocationNode } from '../../../core/models/location';
 import { MapViewer } from '../../maps/map-viewer/map-viewer';
 import { LocationNodeComponent } from '../location-node/location-node';
+import { Coordinate } from 'ol/coordinate';
+import Map from 'ol/Map';
 
 @Component({
   selector: 'app-location-list',
@@ -46,6 +48,16 @@ export class LocationList implements AfterViewInit {
         error: (error) => {
             console.error('Error loading locations for parent location id', location.id, error);
         }
+    });
+  }
+
+  onMapClick = (map: Map, event: any) => {
+    map.forEachFeatureAtPixel(event.pixel, (feature) => {
+        const locationName = feature.get('name');
+        const locationId = feature.get('locationId');
+        console.log('Clicked on location:', locationName, 'with id:', locationId);
+        const locationNode = this.findLocationNodeById(this.locations(), locationId);
+        this.onLocationClick(locationNode!);
     });
   }
 
