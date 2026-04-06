@@ -29,6 +29,7 @@ import { Coordinate } from 'ol/coordinate';
   styleUrl: './map-viewer.css',
 })
 export class MapViewer implements AfterViewInit {
+  private static readonly MAX_ZOOM = 19;
   private map?: Map;
   private markerSource = new VectorSource();
   readonly locations = input<Location[]>([]); // is this the input signal syntax?
@@ -50,7 +51,7 @@ export class MapViewer implements AfterViewInit {
     const center = this.center();
     if (this.map) {
       this.map.getView().setCenter(fromLonLat(center));
-      this.map.getView().setZoom(zoom);
+      this.map.getView().setZoom(Math.min(zoom, MapViewer.MAX_ZOOM));
     }
 
   });
@@ -76,7 +77,8 @@ export class MapViewer implements AfterViewInit {
       ],
       view: new View({
         center: fromLonLat(this.center()),
-        zoom: this.zoom()
+        zoom: Math.min(this.zoom(), MapViewer.MAX_ZOOM),
+        maxZoom: MapViewer.MAX_ZOOM
       })
     });
   }
@@ -134,7 +136,7 @@ export class MapViewer implements AfterViewInit {
     const locations = this.locations();
     if (this.map && locations.length > 0) {
       const extent = this.markerSource.getExtent();
-      this.map.getView().fit(extent!, { padding: [100, 100, 100, 100], maxZoom: 19 });
+      this.map.getView().fit(extent!, { padding: [100, 100, 100, 100], maxZoom: MapViewer.MAX_ZOOM });
     }
   });
 

@@ -1,5 +1,5 @@
 @if (locationNode(); as node) {
-    <li (click)="onLocationClick()?.(node)">{{ node?.name }}</li>
+    <li [class.selected]="isSelected()" (click)="onLocationClick()?.(node)">{{ node?.name }}</li>
     <ul>
         @for (child of node?.children; track child) {
             <app-location-node [locationNode]="child" [onLocationClick]="onLocationClick()"></app-location-node>

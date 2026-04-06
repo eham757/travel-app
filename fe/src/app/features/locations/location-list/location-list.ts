@@ -51,7 +51,6 @@ export class LocationList implements OnInit {
     map.forEachFeatureAtPixel(event.pixel, (feature) => {
         const locationName = feature.get('name');
         const locationId = feature.get('locationId');
-        console.log('Clicked on location:', locationName, 'with id:', locationId);
         const locationNode = this.findLocationNodeById(this.locations(), locationId);
         if (locationNode) {
           this.onLocationClick(locationNode);
