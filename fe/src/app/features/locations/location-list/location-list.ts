@@ -4,10 +4,11 @@ import { MapViewer } from '../../maps/map-viewer/map-viewer';
 import { LocationNodeComponent } from '../location-node/location-node';
 import Map from 'ol/Map';
 import { LocationStore } from '../store/location-store';
+import { Button } from "../../../shared/components/button/button";
 
 @Component({
   selector: 'app-location-list',
-  imports: [MapViewer, LocationNodeComponent],
+  imports: [MapViewer, LocationNodeComponent, Button],
   templateUrl: './location-list.html',
   styleUrls: ['./location-list.css'],
 })
