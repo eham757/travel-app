@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, inject, signal} from '@angular/core';
-import { LocationService } from '../../../core/services/location/location-service';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Location, LocationNode } from '../../../core/models/location';
 import { MapViewer } from '../../maps/map-viewer/map-viewer';
 import { LocationNodeComponent } from '../location-node/location-node';
-import { Coordinate } from 'ol/coordinate';
 import Map from 'ol/Map';
+import { LocationStore } from '../store/location-store';
 
 @Component({
   selector: 'app-location-list',
@@ -12,43 +11,40 @@ import Map from 'ol/Map';
   templateUrl: './location-list.html',
   styleUrls: ['./location-list.css'],
 })
-export class LocationList implements AfterViewInit {
-  locationService = inject(LocationService);
-  locations = signal<LocationNode[]>([]);
-  mapLocations = signal<Location[]>([]);
+export class LocationList implements OnInit {
+  locationStore = inject(LocationStore);
+  locations = this.locationStore.locations;
+  selectedLocation = this.locationStore.selectedLocation;
 
-  selectedLocation = signal<LocationNode | null>(null);
+  mapLocations = computed<Location[]>(() => {
+    const selected = this.selectedLocation();
+    if (selected?.children && selected.children.length > 0) {
+      return selected.children as Location[];
+    }
+
+    if (selected?.parentLocationId) {
+      const parentLocation = this.findLocationNodeById(this.locations(), selected.parentLocationId);
+      if (parentLocation?.children && parentLocation.children.length > 0) {
+        return parentLocation.children as Location[];
+      }
+    }
+
+    return this.locations() as Location[];
+  });
 
   zoom = signal<number>(2);
   center = signal<[number, number]>([0, 0]);
 
-  ngAfterViewInit() {
-    this.locationService.getTopLayerLocations().subscribe({
-        next: (locations) => {
-            this.locations.set(locations as LocationNode[]);
-            this.mapLocations.set(locations as Location[]);
-        },
-        error: (error) => {
-            console.error('Error loading top layer locations', error);
-        }
-    });
+  ngOnInit() {
+    if (this.locations().length === 0) {
+      this.locationStore.loadTopLayerLocations();
+    }
   }
 
 
   onLocationClick = (location: LocationNode) => {
-    this.selectedLocation.set(location);
-
-    this.locationService.getByParentLocationId(location.id).subscribe({
-        next: (locations) => {
-            this.updateLocationsTreeWithChildren(location.id, locations as LocationNode[]);
-            const updatedLocation = this.findLocationNodeById(this.locations(), location.id);
-            this.updateMapLocationsForSelectedLocation(updatedLocation!);
-
-        },
-        error: (error) => {
-            console.error('Error loading locations for parent location id', location.id, error);
-        }
-    });
+    this.locationStore.selectLocation(location.id);
+    this.locationStore.loadChildrenForLocation(location.id);
   }
 
   onMapClick = (map: Map, event: any) => {
@@ -57,23 +53,10 @@ export class LocationList implements AfterViewInit {
         const locationId = feature.get('locationId');
         console.log('Clicked on location:', locationName, 'with id:', locationId);
         const locationNode = this.findLocationNodeById(this.locations(), locationId);
-        this.onLocationClick(locationNode!);
+        if (locationNode) {
+          this.onLocationClick(locationNode);
+        }
     });
-  }
-
-  private updateLocationsTreeWithChildren(parentLocationId: string, children: LocationNode[]) {
-    const updateTree = (locations: LocationNode[]): LocationNode[] => {
-        return locations.map(location => {
-            if (location.id === parentLocationId) {
-                return { ...location, children };
-            }
-            if (location.children) {
-                return { ...location, children: updateTree(location.children) };
-            }
-            return location;
-        });
-    };
-    this.locations.set(updateTree(this.locations()));
   }
 
   private findLocationNodeById(locations: LocationNode[], id: string): LocationNode | null {
@@ -89,18 +72,5 @@ export class LocationList implements AfterViewInit {
         }
     }
     return null;
-  }
-
-  private updateMapLocationsForSelectedLocation(location: LocationNode) {
-    if (location.children && location.children.length > 0) {
-        this.mapLocations.set(location.children as Location[]);
-    } else {
-        const parentLocation = this.findLocationNodeById(this.locations(), location.parentLocationId || '');
-        if (parentLocation) {
-            this.mapLocations.set(parentLocation.children as Location[]);
-        } else {
-            this.mapLocations.set(this.locations() as Location[]);
-        }
-    }
   }
 }
